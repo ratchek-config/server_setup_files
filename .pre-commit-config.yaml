@@ -46,6 +46,8 @@ repos:
     rev: 6.0.0
     hooks:
       - id: flake8
+        args: ["--ignore=E712,E501"]
+    #     exclude: (settings|wsgi|asgi|manage)
 
   # Prettier - a code formatter
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -54,16 +56,14 @@ repos:
       - id: prettier
         types_or: [css, scss, javascript, ts, tsx, json, yaml]
 
-  # Indenting for html files        
+  # Indenting for html files
   - repo: https://github.com/rtts/djhtml
     rev: v1.5.2
     hooks:
       - id: djhtml
-          
-  # Linter for css files          
+
+  # Linter for css files
   - repo: https://github.com/thibaudcolas/pre-commit-stylelint
     rev: v14.2.0
     hooks:
       - id: stylelint
-
-
