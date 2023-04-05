@@ -62,8 +62,9 @@ repos:
     hooks:
       - id: djhtml
 
-  # Linter for css files
-  - repo: https://github.com/thibaudcolas/pre-commit-stylelint
-    rev: v14.2.0
-    hooks:
-      - id: stylelint
+  # # Linter for css files
+  # - repo: https://github.com/thibaudcolas/pre-commit-stylelint
+  #   rev: v14.2.0
+  #   hooks:
+  #     - id: stylelint
+
