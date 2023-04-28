@@ -1,0 +1,88 @@
+#!/bin/bash
+
+# Intro
+echo "Hi, I'll help you set up the project on your local machine."
+echo "Press Enter to proceed"
+read throwaway_var
+
+# Get variables
+echo "Great! You should've created a github repo by now. What's the url?"
+read github_url
+echo "Ok, great. Now what's your project's name?"
+echo "Remember that you can only use letters, numbers, and underscores!"
+read project_name
+
+## Setup dir
+project_dir=${github_url##*/}
+project_dir=${project_dir%%\.git}
+echo "Creating $project_dir"
+mkdir $project_dir
+echo "Changing into $project_dir"
+cd $project_dir
+echo "In $(pwd). Initializing git repo."
+git init
+echo "Adding origin repo"
+git remote add origin $github_url
+echo "Fetching the gitignore file"
+curl https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/gitignore -o .gitignore
+echo "Add editor and prehook config files for some mad stylez"
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/.pre-commit-config.yaml
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/.editorconfig
+
+## Create virtual env and install dependencies
+echo "Creating your virtual environment"
+python3 -m venv --prompt $project_name env
+source env/bin/activate
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/requirements.txt
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/requirements_dev.txt
+pip install -r requirements_dev.txt
+echo "This is your virtual env path: $VIRTUAL_ENV"
+echo "This is your python version: $(python -V)"
+echo "These are your current pip dependencies:"
+pip freeze
+echo
+
+## Create Django project
+echo "Creating Django project"
+django-admin startproject $project_name --verbosity 3
+## Shuffling these folders around because creating a project inside
+## current directory seems to take django FOREVER
+echo "Shuffling some dirs around (check out the script if you're curious)"
+mv $project_name temporary_dir
+mv temporary_dir/manage.py manage.py
+mv temporary_dir/$project_name $project_name
+rmdir temporary_dir
+echo "Done!"
+
+## Setting up Django project
+echo "Changing into project folder"
+cd $project_name
+echo "Setting up environmental variables"
+curl -o settings.ini https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/dev_settings.ini
+echo "Downloading custom settings file"
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/settings.py
+echo "Replacing placeholders in setting file"
+sed -i "s/YOUR_PROJECT_NAME/${project_name}/" settings.py
+echo "Changing back to root folder"
+cd ..
+echo "Adding folder for static files"
+mkdir staticfiles
+./manage.py makemigrations
+./manage.py migrate
+./manage.py collectstatic
+## install and run pre-commit
+pre-commit install
+## you need to add files before pre-commit because it doesn't see them otherwise
+git add .
+pre-commit run --all-files
+## you need to add files after pre-commit because it modifies some of them
+git add .
+
+## Commit, and push to github
+git commit -m "Initial commit"
+git push origin master
+
+## End message
+echo "----------------------"
+echo "You're all finished with local setup!"
+echo "Make sure to run ./manage.py createsuperuser to create your superuser"
