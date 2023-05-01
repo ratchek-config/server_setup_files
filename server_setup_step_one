@@ -1,0 +1,79 @@
+#!/bin/bash
+
+echo "THIS WILL NOT WORK ON UBUNTU 22.10"
+echo "FOR EXAMPLE, OPENING A PORT WORKS DIFFERENTLY"
+echo "FUCK 3 HOURS OF MY LIFE. I LITERALLY WENT INSANE"
+echo "click enter to continue"
+read trowaway_var
+
+# Create bash eternal history
+cd ~
+echo "================================= Creating bash eternal history ================================="
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/.bashrc
+
+# Basic security
+## Update
+echo "================================= Updating packages ================================="
+sudo apt update && sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
+
+## Setup ssh
+### Allow custom port in firewall
+echo "================================= Enabling 6979 in firewall ================================="
+sudo ufw allow 6979/tcp
+
+### Change port
+sudo mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+cd /etc/ssh/
+echo "================================= Downloading custom sshd_config ================================="
+sudo curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/sshd_config
+
+echo "================================= Restarting ssh ================================="
+sudo systemctl restart ssh
+
+echo "================================= Checking if ssh is listening on port 6979 ================================="
+echo "The output should be something like this:"
+echo 'tcp   LISTEN      0        128            0.0.0.0:6979           0.0.0.0:*'
+echo 'tcp   ESTAB       0        0      192.168.121.108:6979     192.168.121.1:57638'
+echo 'tcp   LISTEN      0        128               [::]:6979              [::]:*'
+echo '========================================================================'
+echo 'The output is this:'
+ss -an | grep 6979
+
+echo "================================= Restarting ssh ================================="
+sudo /etc/init.d/ssh restart
+
+
+echo " =================================Enabling firewall. ================================="
+echo "You'll have to log back in after this with:"
+echo 'ssh -p 6979 tomek@YOUR_DROPLET_IP'
+
+sudo ufw enable
+
+## Setup autoupdates
+### autoupdates
+echo "================================= Installing packages for autoupdates ================================="
+sudo DEBIAN_FRONTEND=noninteractive apt install -y unattended-upgrades apt-listchanges bsd-mailx update-notifier-common
+sudo dpkg-reconfigure --priority=low unattended-upgrades
+### Auto reboot if needed
+echo "================================= Modifying autoupdates config files ================================="
+sudo sed -i 's|//Unattended-Upgrade::Automatic-Reboot "false";|Unattended-Upgrade::Automatic-Reboot "true";|g' /etc/apt/apt.conf.d/50unattended-upgrades
+### Test
+echo "================================= running test for unattended-upgrades ================================="
+sudo unattended-upgrades -v -d --dry-run
+echo "================================= end unattended-upgrades test ================================="
+
+
+## Setup fail2ban
+echo "================================= Installing fail2ban ================================="
+sudo DEBIAN_FRONTEND=noninteractive apt-get install fail2ban -y
+sudo service fail2ban restart
+
+# Install and setup test django project with postgres, nginx, and gunicorn
+## Install packages for django
+echo "================================= Installing packages for django ================================="
+sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-venv python3-dev libpq-dev postgresql postgresql-contrib nginx curl -y
+
+# Restart
+echo "================================= Done with initial setup, restarting server ================================="
+sudo reboot now
