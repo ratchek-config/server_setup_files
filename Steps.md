@@ -1,7 +1,7 @@
 # Intro
 **Written for my personal use. Comes with no guarantees and I am not responsible for any effects of you using this.**
 A step by step process for spinning up a django environment on digital ocean from scratch.
-This includes a gitghub account, a local dev environment, ssl certificates, some basic server hardening.
+This includes a github account, a local dev environment, ssl certificates, some basic server hardening.
 
 # Variables
 There's a bunch of stuff you'll need to keep track of or remember, so here's a space to copy/paste them.
