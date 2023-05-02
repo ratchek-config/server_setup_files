@@ -1,7 +1,7 @@
 server {
     listen 80;
-    server_name FULL_DOMAIN_NAME www.FULL_DOMAIN_NAME;
-    
+    server_name DOMAIN_NAME www.DOMAIN_NAME;
+
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
         root /home/tomek/PROJECT_DIR;
@@ -12,4 +12,3 @@ server {
         proxy_pass http://unix:/run/gunicorn.sock;
     }
 }
-
