@@ -6,8 +6,10 @@ echo "Press Enter to proceed"
 read throwaway_var
 
 # Get variables
+echo ""
 echo "Great! You should've created a github repo by now. What's the url?"
 read github_url
+echo ""
 echo "Ok, great. Now what's your project's name?"
 echo "Remember that you can only use letters, numbers, and underscores!"
 read project_name
