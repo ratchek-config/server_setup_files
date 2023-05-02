@@ -76,4 +76,5 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-venv python3-dev libp
 
 # Restart
 echo "================================= Done with initial setup, restarting server ================================="
+echo "See you after the reboot!"
 sudo reboot now

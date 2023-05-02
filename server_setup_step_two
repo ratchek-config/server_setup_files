@@ -1,0 +1,158 @@
+#!/bin/bash
+
+# Get variables
+echo "Hi again. Let's get the django project setup now."
+echo "Please input the project's github url: "
+read github_url
+echo "Please input the website's domain name (withou including the www.): "
+read domain_name
+full_domain_name="www.$domain_name"
+echo "Please input a password for the postgres database: "
+read postgres_password
+
+project_dir=${github_url##*/}
+project_dir=${project_dir%%\.git}
+
+
+echo "Setting up git email and username"
+git config --global user.email "git@ratchek.com"
+git config --global user.name "ratchek"
+echo "Cloning github repo"
+git clone $github_url
+echo "Done!"
+echo "Changing into the project directory"
+cd $project_dir
+pwd
+
+# NOTE:
+# If the workflow ever changes that the initial github repo
+# has more than one directory in it, this method will break
+# That's also why we're doing this now, before we create the virtual env
+echo "Grabbing the project name"
+# This works because the project dir is the only dir in here right now
+cd */
+project_name=$(sed 's#.*/##' <<< $(pwd))
+echo "project name is $project_name"
+# Changing back top
+cd ..
+
+echo "Creating python environment"
+python3 -m venv --prompt $project_name env
+source env/bin/activate
+
+echo "Installing requirements"
+pip install -r requirements.txt
+
+echo "Activating virtual environment"
+source env/bin/activate
+
+echo "Changing into project folder"
+cd $project_name
+echo "Getting production settings"
+curl -o settings.ini https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/prod_settings.ini
+echo "Replacing DJANGO_SECRET_KEY with random string of length 60"
+# This string cannot contain percentage signs!!
+random_password=$( head /dev/urandom | tr -dc A-Za-z0-9 | head -c60 )
+sed -i "s/django-insecure-REPLACE-ME/${random_password}/" settings.ini
+echo "Replacing the rest of the placeholders in setting file"
+sed -i "s/PROJECT_NAME/${project_name}/" settings.ini
+sed -i "s/DJANGO_POSTGRES_PASSWORD/${postgres_password}/" settings.ini
+sed -i "s/FULL_DOMAIN_NAME/${full_domain_name}/" settings.ini
+echo "Changing back to root folder"
+cd ..
+echo "Adding folder for static files"
+mkdir staticfiles
+echo "Running all the manage.py scripts"
+./manage.py makemigrations
+./manage.py migrate
+./manage.py collectstatic
+deactivate
+echo "Exiting virtual env. Finished with django configuration."
+
+# Server Setup
+echo ""
+echo "=============== Starting server setup ==============="
+echo "=============== Gunicorn ==============="
+echo "Downloading gunicorn.socket"
+sudo wget -P /etc/systemd/system/ https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/gunicorn.socket
+echo "Downloading gunicorn.service"
+cd /etc/systemd/system/
+sudo curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/gunicorn.service
+echo "Modifying gunicorn.service"
+sudo sed -i "s/PROJECT_DIR/${project_dir}/" gunicorn.service
+sudo sed -i "s/PROJECT_NAME/${project_name}/" gunicorn.service
+echo "====== Manual checks ======"
+echo "Enabling and starting gunicorn"
+sudo systemctl start gunicorn.socket
+sudo systemctl enable gunicorn.socket
+echo ""
+echo "Checking socket status. (Should have an active listening output here)"
+echo ""
+sudo systemctl status gunicorn.socket
+echo ""
+echo ""
+echo "This should output a socket file"
+echo ""
+file /run/gunicorn.sock
+echo ""
+echo ""
+echo "Checking gunicorn status (should be inactive) "
+echo ""
+sudo systemctl status gunicorn
+echo ""
+echo ""
+echo "Grabbing some html"
+echo ""
+curl --unix-socket /run/gunicorn.sock localhost
+echo ""
+echo ""
+echo "NOW the gunicorn status should be active"
+echo ""
+sudo systemctl status gunicorn
+echo ""
+echo ""
+echo "====== Done with checks ======"
+echo "Restarting gunicorn"
+sudo systemctl daemon-reload
+sudo systemctl restart gunicorn
+echo "Done"
+echo "=============== NGINX ==============="
+echo "Downloading nginx config files"
+cd /etc/nginx/sites-available/
+sudo curl https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/nginx_config -o $project_name
+echo "Replacing placeholders"
+sudo sed -i "s/PROJECT_DIR/${project_dir}/" $project_name
+sudo sed -i "s/DOMAIN_NAME/${domain_name}/" $project_name
+echo "Linking project to sites-enablied"
+sudo ln -s /etc/nginx/sites-available/$project_name /etc/nginx/sites-enabled
+echo "====== Testing NGINX ======"
+sudo nginx -t
+echo "====== Done testing NGINX ======"
+echo "Restarting NGINX"
+sudo systemctl restart nginx
+echo "Allowing NGINX through firewall"
+sudo ufw allow 'Nginx Full'
+echo "=============== Certbot ==============="
+echo "Installing packages (and removing some)"
+sudo snap install core; sudo snap refresh core
+sudo apt remove certbot
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+echo "Installing certificate"
+sudo certbot --nginx -d $domain_name -d www.$domain_name -m "git@ratchek.com" --agree-tos -n
+echo "Checking autorenew"
+echo "(Shouldn't give any errors)"
+sudo certbot renew --dry-run
+echo "=============== Finished server setup ==============="
+echo ""
+# Get deployment script
+echo "Get deployment script"
+cd ~
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/deploy.sh
+echo "Modify deployment script"
+sudo sed -i "s/PROJECT_DIR/${project_dir}/" deploy.sh
+
+## End message
+echo "----------------------"
+echo "You're all finished with the server setup!"
+echo "Make sure to run ./manage.py createsuperuser to create your superuser"

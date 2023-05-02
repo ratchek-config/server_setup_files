@@ -2,7 +2,7 @@
 # This pulls the newest version from github and
 # adds updates the site on the server
 
-cd /home/tomek/finance/
+cd /home/tomek/PROJECT_DIR/
 source env/bin/activate
 ./manage.py --version
 git pull
@@ -12,4 +12,3 @@ pip install -r requirements.txt
 sudo systemctl restart gunicorn
 python3 manage.py check --deploy
 deactivate
-
