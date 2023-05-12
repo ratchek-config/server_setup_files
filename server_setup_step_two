@@ -151,7 +151,7 @@ cd ~
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/deploy.sh
 echo "Modify deployment script"
 sudo sed -i "s/PROJECT_DIR/${project_dir}/" deploy.sh
-
+chmod u+x deploy.sh
 
 ## End message
 echo "----------------------"
