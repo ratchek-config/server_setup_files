@@ -57,7 +57,7 @@ sed -i "s/django-insecure-REPLACE-ME/${random_password}/" settings.ini
 echo "Replacing the rest of the placeholders in setting file"
 sed -i "s/PROJECT_NAME/${project_name}/" settings.ini
 sed -i "s/DJANGO_POSTGRES_PASSWORD/${postgres_password}/" settings.ini
-sed -i "s/FULL_DOMAIN_NAME/${full_domain_name}/" settings.ini
+sed -i "s/DOMAIN_NAME/${domain_name}/" settings.ini
 echo "Changing back to root folder"
 cd ..
 echo "Adding folder for static files"
@@ -151,6 +151,7 @@ cd ~
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/deploy.sh
 echo "Modify deployment script"
 sudo sed -i "s/PROJECT_DIR/${project_dir}/" deploy.sh
+
 
 ## End message
 echo "----------------------"
