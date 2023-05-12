@@ -4,10 +4,10 @@
 echo "Hi again. Let's get the django project setup now."
 echo "Please input the project's github url: "
 read github_url
-echo "Please input the website's domain name (withou including the www.): "
+echo "Please input the website's domain name (don't include the www.): "
 read domain_name
 full_domain_name="www.$domain_name"
-echo "Please input a password for the postgres database: "
+echo "Please input the password for the postgres database: "
 read postgres_password
 
 project_dir=${github_url##*/}

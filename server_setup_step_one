@@ -52,7 +52,7 @@ sudo ufw enable
 
 ## Setup autoupdates
 ### autoupdates
-### Not used for now. More effort than it's worth
+### Not used for now. More effort than it's worth. Keeps creating problems.
 # echo "================================= Installing packages for autoupdates ================================="
 # sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unattended-upgrades apt-listchanges bsd-mailx update-notifier-common
 # sudo dpkg-reconfigure --priority=low unattended-upgrades

@@ -61,6 +61,7 @@ chmod u+x server_setup_step_two
 
 ### Setup database
 The first script should have finished with a reboot, so you'll need to log back in (with new port; exciting!)  
+(If you can't log in, wait a bit. Your server is restarting.)
 ssh -p 6979 tomek@YOUR_DROPLET_IP  
 #### Launch psql
 sudo -u postgres psql  
