@@ -157,3 +157,4 @@ chmod u+x deploy.sh
 echo "----------------------"
 echo "You're all finished with the server setup!"
 echo "Make sure to run ./manage.py createsuperuser to create your superuser"
+echo "(Remember that your new website will give off a 'resource unavailable' message cuz you don't have anything on it and the django landing site isn't allowed with debug=False)"
