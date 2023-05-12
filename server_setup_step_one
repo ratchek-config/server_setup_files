@@ -52,16 +52,17 @@ sudo ufw enable
 
 ## Setup autoupdates
 ### autoupdates
-echo "================================= Installing packages for autoupdates ================================="
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unattended-upgrades apt-listchanges bsd-mailx update-notifier-common
-sudo dpkg-reconfigure --priority=low unattended-upgrades
-### Auto reboot if needed
-echo "================================= Modifying autoupdates config files ================================="
-sudo sed -i 's|//Unattended-Upgrade::Automatic-Reboot "false";|Unattended-Upgrade::Automatic-Reboot "true";|g' /etc/apt/apt.conf.d/50unattended-upgrades
-### Test
-echo "================================= running test for unattended-upgrades ================================="
-sudo unattended-upgrades -v -d --dry-run
-echo "================================= end unattended-upgrades test ================================="
+### Not used for now. More effort than it's worth
+# echo "================================= Installing packages for autoupdates ================================="
+# sudo DEBIAN_FRONTEND=noninteractive apt-get install -y unattended-upgrades apt-listchanges bsd-mailx update-notifier-common
+# sudo dpkg-reconfigure --priority=low unattended-upgrades
+# ### Auto reboot if needed
+# echo "================================= Modifying autoupdates config files ================================="
+# sudo sed -i 's|//Unattended-Upgrade::Automatic-Reboot "false";|Unattended-Upgrade::Automatic-Reboot "true";|g' /etc/apt/apt.conf.d/50unattended-upgrades
+# ### Test
+# echo "================================= running test for unattended-upgrades ================================="
+# sudo unattended-upgrades -v -d --dry-run
+# echo "================================= end unattended-upgrades test ================================="
 
 
 ## Setup fail2ban
