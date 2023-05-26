@@ -66,7 +66,7 @@ ssh -p 6979 tomek@YOUR_DROPLET_IP
 #### Launch psql
 sudo -u postgres psql  
 #### Run the commands.
-You can copy and paste all of the following up to (but not including) the \q in one go, just make sure to first replace the DJANGO_POSTGRES_PASSWORD variable with an actual postgres password (And make sure to remember it for later)  
+You can copy and paste all of the following up to (but not including) the \q in one go, just make sure to first replace the DJANGO_POSTGRES_PASSWORD variable with an actual postgres password (make sure to remember it for later) and the PROJECT_NAME variable with your project's name (gotta do this in two places) 
 
 CREATE DATABASE PROJECT_NAME;  
 CREATE USER django WITH PASSWORD 'DJANGO_POSTGRES_PASSWORD';  
