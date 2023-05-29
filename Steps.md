@@ -53,6 +53,7 @@ ssh tomek@YOUR_DROPLET_IP
 tmux new -s setup  
 
 #### Download server setup script, modify permissions, and run it
+(**TODO** : Add a custom authentication app to the project. User models need to be overridden before the first migrate)
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/server_setup_step_one  
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/server_setup_step_two  
 chmod u+x server_setup_step_one  
@@ -66,7 +67,7 @@ ssh -p 6979 tomek@YOUR_DROPLET_IP
 #### Launch psql
 sudo -u postgres psql  
 #### Run the commands.
-You can copy and paste all of the following up to (but not including) the \q in one go, just make sure to first replace the DJANGO_POSTGRES_PASSWORD variable with an actual postgres password (make sure to remember it for later) and the PROJECT_NAME variable with your project's name (gotta do this in two places) 
+You can copy and paste all of the following up to (but not including) the \q in one go, just make sure to first replace the DJANGO_POSTGRES_PASSWORD variable with an actual postgres password (make sure to remember it for later) and the PROJECT_NAME variable with your project's name (gotta do this in two places)
 
 CREATE DATABASE PROJECT_NAME;  
 CREATE USER django WITH PASSWORD 'DJANGO_POSTGRES_PASSWORD';  
