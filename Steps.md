@@ -32,6 +32,7 @@ PROJECT_NAME -
 ## Local Machine ##
 Navigate to wherever dir you store your projects in  
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/local_setup_script  
+(**TODO** : Add a custom authentication app to the project. User models need to be overridden before the first migrate)
 chmod u+x local_setup_script  
 ./local_setup_script  
 
@@ -53,7 +54,6 @@ ssh tomek@YOUR_DROPLET_IP
 tmux new -s setup  
 
 #### Download server setup script, modify permissions, and run it
-(**TODO** : Add a custom authentication app to the project. User models need to be overridden before the first migrate)
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/server_setup_step_one  
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/server_setup_step_two  
 chmod u+x server_setup_step_one  
