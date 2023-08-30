@@ -64,7 +64,7 @@ curl -o settings.ini https://raw.githubusercontent.com/ratchek-config/server_set
 echo "Downloading custom settings file"
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/settings.py
 echo "Replacing placeholders in setting file"
-sed -i "s/YOUR_PROJECT_NAME/${project_name}/" settings.py
+sed -i "s/YOUR_PROJECT_NAME/${project_name}/g" settings.py
 echo "Changing back to root folder"
 cd ..
 echo "Adding folder for static files"

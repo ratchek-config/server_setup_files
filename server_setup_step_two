@@ -53,11 +53,11 @@ curl -o settings.ini https://raw.githubusercontent.com/ratchek-config/server_set
 echo "Replacing DJANGO_SECRET_KEY with random string of length 60"
 # This string cannot contain percentage signs!!
 random_password=$( head /dev/urandom | tr -dc A-Za-z0-9 | head -c60 )
-sed -i "s/django-insecure-REPLACE-ME/${random_password}/" settings.ini
+sed -i "s/django-insecure-REPLACE-ME/${random_password}/g" settings.ini
 echo "Replacing the rest of the placeholders in setting file"
-sed -i "s/PROJECT_NAME/${project_name}/" settings.ini
-sed -i "s/DJANGO_POSTGRES_PASSWORD/${postgres_password}/" settings.ini
-sed -i "s/DOMAIN_NAME/${domain_name}/" settings.ini
+sed -i "s/PROJECT_NAME/${project_name}/g" settings.ini
+sed -i "s/DJANGO_POSTGRES_PASSWORD/${postgres_password}/g" settings.ini
+sed -i "s/DOMAIN_NAME/${domain_name}/g" settings.ini
 echo "Changing back to root folder"
 cd ..
 echo "Adding folder for static files"
@@ -79,8 +79,8 @@ echo "Downloading gunicorn.service"
 cd /etc/systemd/system/
 sudo curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/gunicorn.service
 echo "Modifying gunicorn.service"
-sudo sed -i "s/PROJECT_DIR/${project_dir}/" gunicorn.service
-sudo sed -i "s/PROJECT_NAME/${project_name}/" gunicorn.service
+sudo sed -i "s/PROJECT_DIR/${project_dir}/g" gunicorn.service
+sudo sed -i "s/PROJECT_NAME/${project_name}/g" gunicorn.service
 echo "====== Manual checks ======"
 echo "Enabling and starting gunicorn"
 sudo systemctl start gunicorn.socket
@@ -114,15 +114,15 @@ echo ""
 echo "====== Done with checks ======"
 echo "Restarting gunicorn"
 sudo systemctl daemon-reload
-sudo systemctl restart gunicorn
+sudo systemctl restart gunicorn	
 echo "Done"
 echo "=============== NGINX ==============="
 echo "Downloading nginx config files"
 cd /etc/nginx/sites-available/
 sudo curl https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/nginx_config -o $project_name
 echo "Replacing placeholders"
-sudo sed -i "s/PROJECT_DIR/${project_dir}/" $project_name
-sudo sed -i "s/DOMAIN_NAME/${domain_name}/" $project_name
+sudo sed -i "s/PROJECT_DIR/${project_dir}/g" $project_name
+sudo sed -i "s/DOMAIN_NAME/${domain_name}/g" $project_name
 echo "Linking project to sites-enablied"
 sudo ln -s /etc/nginx/sites-available/$project_name /etc/nginx/sites-enabled
 echo "====== Testing NGINX ======"
@@ -150,7 +150,7 @@ echo "Get deployment script"
 cd ~
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/deploy.sh
 echo "Modify deployment script"
-sudo sed -i "s/PROJECT_DIR/${project_dir}/" deploy.sh
+sudo sed -i "s/PROJECT_DIR/${project_dir}/g" deploy.sh
 chmod u+x deploy.sh
 
 ## End message
