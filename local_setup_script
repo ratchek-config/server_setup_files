@@ -59,6 +59,8 @@ echo "Done!"
 ## Setting up Django project
 echo "Changing into project folder"
 cd $project_name
+echo "Downloading custom urls file"
+curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/urls.py
 echo "Setting up environmental variables"
 curl -o settings.ini https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/dev_settings.ini
 echo "Downloading custom settings file"
