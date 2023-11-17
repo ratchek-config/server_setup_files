@@ -8,7 +8,17 @@ echo "Please input the website's domain name (don't include the www.): "
 read domain_name
 full_domain_name="www.$domain_name"
 echo "Please input the password for the postgres database: "
-read postgres_password
+while true; do
+    # Prompt the user for input
+    read postgres_password
+
+    # Check if the input contains a percentage sign (%)
+    if [[ $postgres_password == *%* ]]; then
+        echo "The password cannot contain a percentage sign. Please try again."
+    else
+        break  # Exit the loop if the input is valid
+    fi
+done
 
 project_dir=${github_url##*/}
 project_dir=${project_dir%%\.git}
@@ -114,7 +124,7 @@ echo ""
 echo "====== Done with checks ======"
 echo "Restarting gunicorn"
 sudo systemctl daemon-reload
-sudo systemctl restart gunicorn	
+sudo systemctl restart gunicorn
 echo "Done"
 echo "=============== NGINX ==============="
 echo "Downloading nginx config files"
@@ -126,7 +136,7 @@ sudo sed -i "s/DOMAIN_NAME/${domain_name}/g" $project_name
 echo "Linking project to sites-enablied"
 sudo ln -s /etc/nginx/sites-available/$project_name /etc/nginx/sites-enabled
 echo "Add www-data to tomek group so nginx can access project folder for static files"
-sudo usermod -a -G tomek www-data 
+sudo usermod -a -G tomek www-data
 echo "====== Testing NGINX ======"
 sudo nginx -t
 echo "====== Done testing NGINX ======"
