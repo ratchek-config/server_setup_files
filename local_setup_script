@@ -59,11 +59,17 @@ mv temporary_dir/$project_name $project_name
 rmdir temporary_dir
 echo "Done!"
 
+## Create app
+echo "Creating the ${app_name} app"
+python manage.py startapp $app_name
+
+
 ## Setting up Django project
 echo "Changing into project folder"
 cd $project_name
 echo "Downloading custom urls file"
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/urls.py
+sed -i "s/YOUR_APP_NAME/${app_name}/g" urls.py
 echo "Setting up environmental variables"
 curl -o settings.ini https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/dev_settings.ini
 echo "Downloading custom settings file"
@@ -71,12 +77,12 @@ curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/mast
 echo "Replacing placeholders in setting file"
 sed -i "s/YOUR_PROJECT_NAME/${project_name}/g" settings.py
 sed -i "s/YOUR_APP_NAME/${app_name}/g" settings.py
+## Create static files folder
 echo "Changing back to root folder"
 cd ..
 echo "Adding folder for static files"
 mkdir staticfiles
-echo "Creating the ${app_name} app"
-python manage.py startapp $app_name
+## Setting up app
 echo "Changing into app folder"
 cd $app_name
 echo "Downloading custom models file"
