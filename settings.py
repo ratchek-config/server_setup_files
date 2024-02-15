@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'allauth',
     'allauth.account',
+    'YOUR_APP_NAME',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
 ]
+
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 ROOT_URLCONF = "YOUR_PROJECT_NAME.urls"
 
