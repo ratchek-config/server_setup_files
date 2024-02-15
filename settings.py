@@ -59,7 +59,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
-AUTH_USER_MODEL = "accounts.CustomUser"
+AUTH_USER_MODEL = "YOUR_APP_NAME.CustomUser"
 
 ROOT_URLCONF = "YOUR_PROJECT_NAME.urls"
 
