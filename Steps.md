@@ -34,6 +34,7 @@ PROJECT_NAME -
 Navigate to wherever dir you store your projects in  
 curl -O https://raw.githubusercontent.com/ratchek-config/server_setup_files/master/local_setup_script  
 (**TODO** : Add a custom authentication app to the project. User models need to be overridden before the first migrate)
+(**TODO** : Fix requirements so that it starts out with the latest version, but then freezes them after installation)
 chmod u+x local_setup_script  
 ./local_setup_script  
 
